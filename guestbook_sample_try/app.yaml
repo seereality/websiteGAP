@@ -1,0 +1,17 @@
+application: webcap-nightfury13
+version: 1
+runtime: python27
+api_version: 1
+threadsafe: true
+
+libraries:
+- name: webapp2
+  version: latest
+- name: jinja2
+  version: latest
+
+handlers:
+- url: /.*
+  script: webcap-nightfury13.application
+- url: /stylesheets
+  static_dir: stylesheets

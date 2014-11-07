@@ -1,0 +1,291 @@
+<!DOCTYPE HTML>
+<!--
+    Twenty by HTML5 UP
+    html5up.net | @n33co
+    Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+    <head>
+        <title>Record Video</title>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta name="description" content="" />
+        <meta name="keywords" content="" />
+        <!--[if lte IE 8]><script src="css/ie/html5shiv.js"></script><![endif]-->
+        <script src="../js/jquery.min.js"></script>
+        <script src="../js/jquery.dropotron.min.js"></script>
+        <script src="../js/jquery.scrolly.min.js"></script>
+        <script src="../js/jquery.scrollgress.min.js"></script>
+        <script src="../js/skel.min.js"></script>
+        <script src="../js/skel-layers.min.js"></script>
+        <script src="../js/init.js"></script>
+         <script 
+            src="https://cdn.webrtc-experiment.com/MediaStreamRecorder-v1.2.js" 
+            data-require="WhammyRecorder,MediaRecorder"
+            data-scripts-dir="https://cdn.webrtc-experiment.com/msr/">
+        </script>
+        <noscript>
+            <link rel="stylesheet" href="../css/skel.css" />
+            <link rel="stylesheet" href="../css/style.css" />
+            <link rel="stylesheet" href="../css/style-wide.css" />
+            <link rel="stylesheet" href="../css/style-noscript.css" />
+        </noscript>
+        <!--[if lte IE 8]><link rel="stylesheet" href="css/ie/v8.css" /><![endif]-->
+        <!--[if lte IE 9]><link rel="stylesheet" href="css/ie/v9.css" /><![endif]-->
+        
+        <script>
+            document.createElement('article');
+            document.createElement('footer');
+        </script>
+        
+        <!-- script used for audio/video/gif recording 
+        <script src="./js/RecordRTC.js"> </script> -->
+    </head>
+
+    <body class="no-sidebar">
+    
+        <!-- Header -->
+            <header id="header">
+                <h1 id="logo"><a href={{ mainpage_url|safe }}>BriteCam <span>by Unorthodox</span></a></h1>
+                <nav id="nav">
+                    <ul>
+                        <li class="current"><a href={{ mainpage_url|safe }}>{{ mainpage_url_linktext }}</a></li>
+                        <li class="">
+                            <a href={{ url|safe }} class="button special">{{ url_linktext }}</a>
+                        </li>
+                        
+                    </ul>
+                </nav>
+            </header>
+
+        <article align="center">
+            <header style="text-align: center;">
+                <h1>
+                    Recording audio+video using RecordRTC.
+                </h1>            
+                 
+           </header>
+
+           <div>
+            <table style="width:100%">
+             <tr>
+                <th>
+                    <label for="time-interval">Time Interval (milliseconds):</label>
+                </th>
+                <th>
+                    <label for="video-width">Video Width:</label>
+                </th>
+                <th>
+                    <label for="video-height">Video Height:</label>
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    <input type="text" id="time-interval" value="5000">
+                </td>
+                <td>
+                    <input type="text" id="video-width" value="320">
+                </td>
+                <td>
+                    <input type="text" id="video-height" value="240">
+                </td>
+            </tr>  
+            </table>          
+
+            
+        </div>
+        
+        <div id="buttons-container" align="center">
+            <button id="start-recording" class="button">Start Recording</button>
+            <button id="stop-recording" class="button" disabled>Stop Recording</button>
+        </div>
+
+        <div id="videos-container" align="center">
+        </div>
+
+        
+
+            
+            
+     <!--       <blockquote>
+                For chrome, please try <a href="https://www.webrtc-experiment.com/RecordRTC/">https://www.webrtc-experiment.com/RecordRTC/</a>.
+            </blockquote>-->
+
+           <!--  <div class="github-stargazers"></div>
+		
+            <section class="experiment">
+                <div class="inner">
+                    <h2 id="download-url"></h2><br />
+                    <video id="video"></video><hr />
+                    <button id="start-recording" class="button">Record Audio+Video</button>
+                    <button id="stop-recording" class="button" disabled>Stop</button><br />
+                </div>
+            </section> -->
+        </article>
+         <script>
+            var mediaConstraints = { audio: !!navigator.mozGetUserMedia, video: true };
+            
+            document.querySelector('#start-recording').onclick = function() {
+                this.class = 'button disabled';
+                this.disabled = true;
+                navigator.getUserMedia(mediaConstraints, onMediaSuccess, onMediaError);
+            };
+            
+            document.querySelector('#stop-recording').onclick = function() {
+                this.class = 'button disabled';
+                this.disabled = true;
+                mediaRecorder.stop();
+            };
+            
+            var mediaRecorder;
+
+            function onMediaSuccess(stream) {
+                var video = document.createElement('video');
+
+                var videoWidth = document.getElementById('video-width').value || 320;
+                var videoHeight = document.getElementById('video-height').value || 240;
+
+                video = mergeProps(video, {
+                    controls: true,
+                    width: videoWidth,
+                    height: videoHeight,
+                    src: URL.createObjectURL(stream)
+                });
+                video.play();
+
+                videosContainer.appendChild(video);
+                videosContainer.appendChild(document.createElement('hr'));
+
+                mediaRecorder = new MediaStreamRecorder(stream);
+                mediaRecorder.mimeType = 'video/webm'; // this line is mandatory
+                mediaRecorder.videoWidth  = videoWidth;
+                mediaRecorder.videoHeight = videoHeight;
+                mediaRecorder.ondataavailable = function(blob) {
+                    var a = document.createElement('a');
+                    a.target = '_blank';
+                    a.innerHTML = 'Open Recorded Video No. ' + (index++) + ' (Size: ' + bytesToSize(blob.size) + ') Time Length: ' + getTimeLength(timeInterval);
+
+                    a.href = URL.createObjectURL(blob);
+
+                    videosContainer.appendChild(a);
+                    videosContainer.appendChild(document.createElement('hr'));
+                };
+                
+                var timeInterval = document.querySelector('#time-interval').value;
+                if(timeInterval) timeInterval = parseInt(timeInterval);
+                else timeInterval = 5 * 1000;
+
+                // get blob after specific time interval
+                mediaRecorder.start(timeInterval);
+                
+                document.querySelector('#stop-recording').disabled = false;
+            }
+
+            function onMediaError(e) {
+                console.error('media error', e);
+            }
+
+            var videosContainer = document.getElementById('videos-container');
+            var index = 1;
+            
+            // below function via: http://goo.gl/B3ae8c
+            function bytesToSize(bytes) {
+               var k = 1000;
+               var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+               if (bytes === 0) return '0 Bytes';
+               var i = parseInt(Math.floor(Math.log(bytes) / Math.log(k)),10);
+               return (bytes / Math.pow(k, i)).toPrecision(3) + ' ' + sizes[i];
+            }
+            
+            // below function via: http://goo.gl/6QNDcI
+            function getTimeLength(milliseconds) {
+                var data = new Date(milliseconds);
+                return data.getUTCHours()+" hours, "+data.getUTCMinutes()+" minutes and "+data.getUTCSeconds()+" second(s)";
+            }
+            
+            window.onbeforeunload = function() {
+                document.querySelector('#start-recording').disabled = false;
+            };
+        </script>
+
+
+           <!-- <script>
+
+		/* added to extend cross-browser support if chrome adds the audio features 
+
+    		var ua= navigator.userAgent, tem, 
+	    	M= ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
+	    	if(/trident/i.test(M[1])){
+	        	tem=  /\brv[ :]+(\d+)/g.exec(ua) || [];
+	        	alert('IE ');
+	    	}
+    		if(M[1]=== 'Chrome'){
+		       	tem= ua.match(/\bOPR\/(\d+)/)
+		        if(tem!= null) alert( 'Opera ');
+		}
+	    	M= M[2]? [M[1], M[2]]: [navigator.appName, navigator.appVersion, '-?'];
+		if((tem= ua.match(/version\/(\d+)/i))!= null) M.splice(1, 1, tem[1]);
+	        alert(M[0]);
+
+		browser extension ends here*/
+			
+		//if (M[0] == 'Firefox'){	
+		var video = document.getElementById('video');
+                var downloadURL = document.getElementById('download-url');
+
+                var startRecording = document.getElementById('start-recording');
+                var stopRecording = document.getElementById('stop-recording');
+
+                startRecording.onclick = function() {
+                    startRecording.disabled = true;
+                    stopRecording.disabled = false;
+
+                    captureUserMedia(function(stream) {
+                        window.audioVideoRecorder = window.RecordRTC(stream, {
+                            type: 'video' // don't forget this; otherwise you'll get video/webm instead of audio/ogg
+                        });
+                        window.audioVideoRecorder.startRecording();
+                    });
+                };
+
+                stopRecording.onclick = function() {
+                    stopRecording.disabled = true;
+                    startRecording.disabled = false;    
+
+                    
+                    window.audioVideoRecorder.stopRecording(function(url) {
+                        downloadURL.innerHTML = '<a href="' + url + '" download="RecordRTC.webm" class="button special" target="_blank">Save to Database</a>';
+                        video.src = url;
+                        video.muted = false;
+                        video.play();
+                        
+                        video.onended = function() {
+                            video.pause();
+                            
+                            // dirty workaround for: "firefox seems unable to playback"
+                            video.src = URL.createObjectURL(audioVideoRecorder.getBlob());
+                        };
+                    });
+                };
+
+                function captureUserMedia(callback) {
+                    navigator.getUserMedia = navigator.mozGetUserMedia || navigator.webkitGetUserMedia;
+                    navigator.getUserMedia({ audio: true, video: true }, function(stream) {
+                        video.src = URL.createObjectURL(stream);
+                        video.muted = true;
+                        video.controls = true;
+                        video.play();
+                        
+                        callback(stream);
+                    }, function(error) { console.error(error); });
+                }
+		//}
+	
+		//Code for firefox ends here!
+		
+		
+
+            </script> -->
+
+            
+    </body>
+</html>

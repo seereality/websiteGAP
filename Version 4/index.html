@@ -1,0 +1,126 @@
+<html>
+
+<head>
+<title>Britecam</title>
+
+<style>
+.flex-container {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  
+  -webkit-flex-flow: row wrap;
+  justify-content: space-around;
+}
+
+.flex-item {
+  background: black;
+  padding: 5px;
+  width: 350px;
+  height: 250px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  border-radius: 0.8em;
+}
+
+video {
+	width: 350px;
+	height: 220px;
+}
+
+</style>
+
+<script src="https://www.WebRTC-Experiment.com/RecordRTC.js"></script>
+<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+
+</head>
+
+<body>
+
+<div id="controls">
+</div>
+
+<div id="camera-list">
+	<ul class="flex-container">
+    </ul>
+</div>
+
+<script>
+
+function showHideCam(element, id) {
+	if(element.checked)
+		$("#camera-li-" + id).show();
+	else
+		$("#camera-li-" + id).hide();
+}
+
+$(document).ready(function() {
+	
+	function gotSources(sourceInfos) {
+    	var i = 0; 
+    	while(i != sourceInfos.length) {
+		    var sourceInfo = sourceInfos[i];
+		    var mediaConstraints = {
+		    	video: {
+	    			optional: [{sourceId: sourceInfo.id}]
+	    		}
+	        };
+		    
+		    if (sourceInfo.kind === "video") {
+		    	$(".flex-container").append("<li id='camera-li-" + sourceInfo.id + "' class='flex-item camera'><span id='camera-name-" + sourceInfo.id + "' style='color: white; padding-left: 30px;'></span><video id=\"" + sourceInfo.id + "\" controls muted autoplay></video></li>");
+		    	
+		        getVideoFeed(mediaConstraints, sourceInfo.id);
+		        console.log(sourceInfo.id);
+		       
+		    } 
+		    else
+		      console.log("Some other kind of source: ", sourceInfo);
+		    i++;
+		}
+	}
+	
+	navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+	
+	if (typeof MediaStreamTrack === "undefined") 
+    	alert("This browser does not support MediaStreamTrack");
+	else {
+		MediaStreamTrack.getSources(gotSources);
+		
+	}
+	
+	function onMediaError(error) {
+        console.error("Media error", error);
+    }
+	
+	
+	function getVideoFeed(mediaConstraints, id) {
+		navigator.getUserMedia(mediaConstraints, 
+				   function onMediaSuccess(stream) {
+				      window.stream = stream;
+				      console.log(stream.getVideoTracks());
+                      
+				      $("#" + id).attr("src", window.URL.createObjectURL(stream));
+                      
+                      var cameraName = window.stream.getVideoTracks()[0].label;
+                      $("#camera-name-" + id).text(cameraName);
+                      
+                      $("#controls").append("<input type='checkbox' checked onclick='showHideCam(this, \"" + id + "\")'>" + cameraName + " ");
+                }, 
+                onMediaError);
+		
+		
+	}
+	
+	
+});
+</script>
+
+</body>
+
+</html>

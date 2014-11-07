@@ -1,0 +1,13 @@
+
+kinoP_clip.avi
+jam1.avi
+chia2.avi
+
+$IGNORE_SPECIAL_COMMANDS:1
+$START:15
+$END:75
+#$SLOWDOWN_START:60
+#$SLOWDOWN_TIME:800
+
+subjectB1-320x240.avi
+capture1.avi

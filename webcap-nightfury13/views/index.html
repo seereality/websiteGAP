@@ -1,0 +1,105 @@
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<title>BriteCam</title>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="description" content="" />
+		<meta name="keywords" content="" />
+		<!--[if lte IE 8]><script src="css/ie/html5shiv.js"></script><![endif]-->
+		<script src="../js/jquery.min.js"></script>
+		<script src="../js/jquery.dropotron.min.js"></script>
+		<script src="../js/jquery.scrolly.min.js"></script>
+		<script src="../js/jquery.scrollgress.min.js"></script>
+		<script src="../js/skel.min.js"></script>
+		<script src="../js/skel-layers.min.js"></script>
+		<script src="../js/init.js"></script>
+		<noscript>
+			<link rel="stylesheet" href="../css/skel.css" />
+			<link rel="stylesheet" href="../css/style.css" />
+			<link rel="stylesheet" href="../css/style-wide.css" />
+			<link rel="stylesheet" href="../css/style-noscript.css" />
+		</noscript>
+		<!--[if lte IE 8]><link rel="stylesheet" href="css/ie/v8.css" /><![endif]-->
+		<!--[if lte IE 9]><link rel="stylesheet" href="css/ie/v9.css" /><![endif]-->
+	</head>
+	<body class="index">
+	
+		<!-- Header -->
+			<header id="header" class="alt">
+				<h1 id="logo"><a href="index.html">BriteCam <span>by Unorthodox</span></a></h1>
+				<nav id="nav">
+					<ul>
+						<li class="current">Welcome</li>
+						<li class="submenu">
+							{% if user: %}
+								<a class ="button special">{{ user }}</a>
+								<ul>
+									<li>
+										<a href={{ url_logout|safe }}>{{ url_logout_linktext }}</a>
+									</li>
+								</ul>
+							{% else: %}
+								<a class="button special">Sign-In</a>
+								<ul>
+                            	    {% for provider in providers %}
+                            	     <li><a href={{ provider[0] }}>{{ provider[1] }}</a></li>
+                            	    {% endfor %}
+								</ul>
+							{% endif %}
+						</li>
+						
+					</ul>
+				</nav>
+			</header>
+
+		<!-- Banner -->		
+			<section id="banner">
+				
+				<!--
+					".inner" is set up as an inline-block so it automatically expands
+					in both directions to fit whatever's inside it. This means it won't
+					automatically wrap lines, so be sure to use line breaks where
+					appropriate (<br />).
+				-->
+				<div class="inner">
+					
+					<header>
+						<h2>BriteCam</h2>
+					</header>
+
+					<footer>
+                    {% if url_linktext: %}
+                        <ul class="buttons">
+                            <li><a href={{ record_url|safe }} class="button special">{{ record_url_linktext }}</a></li>
+                            <li><a href={{ url|safe }} class="button special">{{ url_linktext }}</a></li>
+                        </ul>
+                    {% else: %}
+					   Secure. Share. Capture.
+                    {% endif %}
+                    </footer>
+					
+				
+				</div>
+				
+			</section>
+		
+		
+
+		<!-- CTA -->
+			<section id="cta">
+			
+				<header>
+                    
+				
+				</header>
+				<footer>
+					
+				</footer>
+			
+			</section>
+
+		
+
+	</body>
+</html>

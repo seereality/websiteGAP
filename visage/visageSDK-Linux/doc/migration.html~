@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Migration from older versions</title>
+<link href="css/main.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+
+<h1>Migration from older versions</h1>
+<p>Visage Technologies strives to minimize changes in API and configuration files when releasing new versions of the SDK. The inevitable changes are listed here together with specific instructions for developers who have existing applications built with older versions.</p>
+
+<h2>Changes in 7.2b1.835</h2> 
+
+<p>This section covers all changes introduced in all releases since 7.1b6.730.</p>
+
+<h3>Changes in configuration file format:</h3>
+
+<ul>
+<li>New configuration optional parameters <b>max_work_eye_dist</b>, <b>work_buffer_width</b>, <b>work_buffer_height</b> added. If they are not listed in the configuration file default values will be used (60, 1024, 1024 in the order listed). For detailed description of these parameters consult VisageTracker Configuration Manual</li>
+<li><b>max_work_image_width</b> parameter is now obsolete</li>
+</ul>
+
+<br><br><br><br><hr>
+
+<h2>Changes in older releases</h2>
+<hr>
+
+<h1>visage|SDK 7.1b6.730</h1>
+<p>This is a first release of visage|SDK for Linux.</p>
+</body>
+</html>

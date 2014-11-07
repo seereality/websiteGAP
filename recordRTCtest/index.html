@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+
+<link href="http://fonts.googleapis.com/css?family=Didact+Gothic" rel="stylesheet" />
+<link href="default.css" rel="stylesheet" type="text/css" media="all" />
+<link href="fonts.css" rel="stylesheet" type="text/css" media="all" />
+
+<!--[if IE 6]><link href="default_ie6.css" rel="stylesheet" type="text/css" /><![endif]-->
+
+</head>
+<body>
+<div id="header-wrapper">
+	<div id="header" class="container">
+		<div id="logo">
+			<h1><a href="#">WebCam Viewer</a></h1>
+		</div>
+		
+	</div>
+	<div style="text-align:center">
+	<video autoplay="true" id="videoElement">
+	
+	</video>
+</div>
+</div>
+<script>
+var video = document.querySelector("#videoElement");
+
+navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+
+if (navigator.getUserMedia) {       
+	navigator.getUserMedia({video: true}, handleVideo, videoError);
+}
+
+function handleVideo(stream) {
+	video.src = window.URL.createObjectURL(stream);
+}
+
+function videoError() {
+	// do something
+}
+</script>
+
+
+</body>
+</html>
