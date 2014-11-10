@@ -38,6 +38,8 @@ class MainPage(webapp2.RequestHandler):
 		user = users.get_current_user()
 		url_logout = ''
 		url_logout_linktext = ''
+		url_conf = ''
+		url_conf_linktext = ''
 
 		if users.get_current_user():
 			user = user.nickname()
@@ -48,6 +50,8 @@ class MainPage(webapp2.RequestHandler):
 			url_linktext = 'VideoChatter+'
 			record_url = self.request.host_url+'/record'
 			record_url_linktext = 'New Recording'
+			url_conf = self.request.host_url+'/conference'
+			url_conf_linktext = 'VideoChat'
 
 		else:
 			#self.redirect(users.create_login_url(self.request.uri))
@@ -63,11 +67,40 @@ class MainPage(webapp2.RequestHandler):
 			'greeting': greeting,
 			'record_url': record_url,
 			'record_url_linktext': record_url_linktext,
+			'url_conf': url_conf,
+			'url_conf_linktext': url_conf_linktext,
 			'providers': provs,
 			'user': user,
 		}
 
 		template = JINJA_ENVIRONMENT.get_template('views/index.html')
+		self.response.write(template.render(template_values))
+
+class ConferencePage(webapp2.RequestHandler):
+
+	def get(self):
+
+		user = users.get_current_user()
+		mainpage_url = self.request.host_url+'/'
+		mainpage_url_linktext = 'Back to Home'
+		url_logout = ''
+		url_logout_linktext = ''
+
+		if user:
+			url = users.create_logout_url(self.request.uri)
+			url_lintext = 'Logout'
+		else:
+			self.redirect('/')
+
+		template_values = {
+			'mainpage_url': mainpage_url,
+			'mainpage_url_linktext': mainpage_url_linktext,
+			'url_logout': url_logout,
+			'url_logout_linktext': url_logout_linktext,
+			'user': user,
+		}
+		
+		template = JINJA_ENVIRONMENT.get_template('views/conference.html')
 		self.response.write(template.render(template_values))
 
 class RecordPage(webapp2.RequestHandler):
@@ -113,6 +146,7 @@ class RecordPage(webapp2.RequestHandler):
 application = webapp2.WSGIApplication([
 		('/', MainPage),
 		('/record',RecordPage),
+		('/conference',ConferencePage),
 #		('/upload',UploadHandler),
 #		('/serve',ServeHandler),
 ], debug=True)
