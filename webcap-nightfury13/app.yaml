@@ -19,5 +19,13 @@ handlers:
   static_dir: css
 - url: /images
   static_dir: images
+- url: /ext_js
+  static_dir: ext_js
+- url: /media
+  static_dir: media
+- url: /styles
+  static_dir: styles
+- url: /models
+  static_dir: models
 - url: /.*
   script: webcap-nightfury13.application
